@@ -1,2 +1,2 @@
 # tools
-Just another repository woth usefull tools
+Just another repository with usefull tools
