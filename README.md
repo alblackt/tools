@@ -1,2 +1,2 @@
 # tools
-Repository with usefull tools
+Usefull tools for sysadmin
