@@ -80,6 +80,20 @@
 
 <pre><code>cinst -y 7zip javaruntime far foxitreader flashplayerplugin firefox adblockplusfirefox aimp ccleaner notepadplusplus googlechrome kitty.portable sysinternals
 </code></pre>
+
+        
+<p>Iptables hints</p>
+
+<pre><code>iptables -A INPUT -p tcp --dport 80 -j DROP
+</code></pre>
+<pre><code>iptables -L INPUT -n --line-numbers
+</code></pre>
+<pre><code>iptables -D INPUT %NUM%
+</code></pre>
+
+        
+        
+        
       </section>
     </div>
 
