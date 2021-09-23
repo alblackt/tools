@@ -142,6 +142,13 @@ H4021-0C1E2-483G9-0U2A4-8N83M</li>
 <pre><code>@powershell -NoProfile -ExecutionPolicy Bypass -Command "iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))" &amp;&amp; SET "PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin"
 </code></pre>
 
+<p>PowerShell Installation script: </p>
+
+<pre><code>    
+Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))    
+</code></pre>    
+    
+    
 <p>Packages for users</p>
 
 <li><a href="https://yadi.sk/d/LM-pjoOkv7AFcw">Autoinstaller</a></li>        
