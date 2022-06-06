@@ -189,10 +189,9 @@ Volumes:	&lt;Volumes&gt;
    
 <p>Template for WireGuard</p>
         
-<pre><code>
-
-[Interface]
+<pre><code>[Interface]
 PrivateKey = %PrivateKeyThere%
+#Client IP
 Address = 10.20.0.2/32 
 
 [Peer]
@@ -201,7 +200,6 @@ PublicKey = %PublicKeyOfServer%
 AllowedIPs = 192.168.21.0/24, 10.20.0.0/24
 #Server address or IP with port 
 Endpoint = server.address.com:13231
-
 </code></pre>    
     
     
