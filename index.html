@@ -186,7 +186,26 @@ Volumes:	&lt;Volumes&gt;
 </code></pre>
     
     
+   
+<p>Template for WireGuard</p>
         
+<pre><code>
+
+[Interface]
+PrivateKey = %PrivateKeyThere%
+Address = 10.20.0.2/32 
+
+[Peer]
+PublicKey = %PublicKeyOfServer%
+# All IP And Network that will be accepted thru VPN
+AllowedIPs = 192.168.21.0/24, 10.20.0.0/24
+#Server address or IP with port 
+Endpoint = server.address.com:13231
+
+</code></pre>    
+    
+    
+    
 <a id="iptables" class="anchor" href="#iptables" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Iptables hints</h3>        
 
 <pre><code>iptables -A INPUT -p tcp --dport 80 -j DROP
