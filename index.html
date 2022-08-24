@@ -205,7 +205,47 @@ Endpoint = server.address.com:13231
  <li><a href="https://www.procustodibus.com/blog/2021/03/wireguard-allowedips-calculator/">WireGuard Allowed IP Calculator</a></li>   
     
 <h3>
-<a id=WireGuard Windows Installation</a>DevOps</h3>    
+<a id=WireGuard Windows Installation</a>DevOps</h3>  
+
+    
+    
+    
+    
+<p>WireGuard with limited user right in Windows 10/11 PRO</p>
+    
+<pre><code>
+1. Add Registry value From PowerShell: 
+  New-ItemProperty "hklm:\software\wireguard" -Name "LimitedOperatorUI" -Value 1 -PropertyType "DWord" -Force
+2. Add your user to the group Network Configurator Operators. from PowerShell run:
+ Add-LocalGroupMember -Group "Network Configuration Operators" -Member "$username"
+
+</code></pre>    
+    
+<p>WireGuard with limited user right in Windows 10/11 HOME</p>
+    
+<pre><code>
+1. Download psexec from the sysinternals page:
+https://docs.microsoft.com/en-us/sysinternals/downloads/psexec
+or install it with chololatey 
+'choco install psexec'
+
+2. Download nco.reg from this link
+http://oracle3.n2ip.ru/index.php/s/dTpqKG6yfkq5TqW
+
+3. Open up an administrator console and type 
+`psexec -i -s regedit`.
+
+4. Choose File->Import and select the nco.reg file.
+
+5. Add your user to the group from PowerShell:
+ Add-LocalGroupMember -Group "Network Configuration Operators" -Member "$username"
+
+6. Add Registry value From PowerShell: 
+  New-ItemProperty "hklm:\software\wireguard" -Name "LimitedOperatorUI" -Value 1 -PropertyType "DWord" -Force
+</code></pre>    
+    
+    
+    
     
 <a id="iptables" class="anchor" href="#iptables" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Iptables hints</h3>        
 
