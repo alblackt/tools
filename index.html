@@ -238,6 +238,8 @@ http://oracle3.n2ip.ru/index.php/s/dTpqKG6yfkq5TqW
 5. Add your user to the group from PowerShell:
  Add-LocalGroupMember -Group "Network Configuration Operators" -Member "$username"
 
+OR! You can do it from GUI: Run "control userpasswords2" and choose User you need and group "Network Configuration Operators"
+
 6. Add Registry value From PowerShell: 
   New-ItemProperty "hklm:\software\wireguard" -Name "LimitedOperatorUI" -Value 1 -PropertyType "DWord" -Force
 </code></pre>    
