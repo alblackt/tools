@@ -5,4 +5,3 @@ echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docke
 sudo apt-get update -y
 apt-cache policy docker-ce
 sudo apt install docker-ce -y
-sudo systemctl status docker
