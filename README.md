@@ -1,2 +1,2 @@
 # tools
-Usefull tools for sysadmin
+Usefull tools for DevOps/Sysadmin
