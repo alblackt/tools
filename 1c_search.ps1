@@ -1,7 +1,7 @@
 $drives = Get-PSDrive -PSProvider 'FileSystem' # Get all drives list
 $outputFileName = "$env:COMPUTERNAME.txt" # Create the name of a text file with search results
 
-# функция для поиска файла на диске
+# search function
 function FindFileOnDrive($driveLetter, $fileName) {
   $path = "$driveLetter`:/" # Create path for search
   $results = Get-ChildItem $path -Recurse -ErrorAction SilentlyContinue | where { $_.Name -eq $fileName } # search file on disk
