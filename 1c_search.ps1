@@ -13,7 +13,7 @@ function FindFileOnDrive($driveLetter, $fileName) {
   }
 }
 
-# search for files on each disk and display the search progress
+# search for files on each disk and print the search progress
 $drives | ForEach-Object {
   $driveLetter = $_.Name
   Write-Output "Searching for files on drive $driveLetter..."
