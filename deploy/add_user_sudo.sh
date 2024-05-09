@@ -10,6 +10,7 @@ if [ "$(id -u)" != "0" ]; then
 fi
 
 # Print the user name
+echo $USER
 user_name = $USER
 echo "The username you wish to grant sudo access to: $user_name"
 
