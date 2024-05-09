@@ -1,7 +1,8 @@
 #!/bin/bash
 # v0.1
 # This script will ask for a user name and then add that user to sudoers with NOPASSWD option.
-# Usage: curl -sSL sudo.1one.one | bash
+# Usage: curl -fsSL sudo.1one.one -o addsudo.sh; sh addsudo.sh
+
 
 # Make sure we are running as root
 if [ "$(id -u)" != "0" ]; then
