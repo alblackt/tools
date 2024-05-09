@@ -1,29 +1,37 @@
 #!/bin/bash
 
-# First, make sure that we're running as root
+# This script will ask for a user name and then add that user to sudoers with NOPASSWD option.
+
+# Make sure we are running as root
 if [ "$(id -u)" != "0" ]; then
-   echo "This script must be run as root" 
+   echo "This script must be run as root"
    exit 1
 fi
 
-# Assuming the environment variable is set outside the script. For demonstration, we'll receive it as a script argument
-# Normally, you would have the user set like: user=$USER_NAME
-# To execute script: sudo ./script_name.sh $USER_NAME
-user=$1
+# Ask for the user name
+echo "Enter the username you wish to grant sudo access to:"
+read user_name
 
-# Check if the user exists
-if id "$user" &>/dev/null; then
+# Check if the user exists in the system
+if id "$user_name" &>/dev/null; then
     # User exists, proceed to give sudo rights
-    # For Ubuntu/Debian, 'sudo' group is used
-    usermod -aG sudo $user
-
-    # For CentOS/RHEL, 'wheel' group is used
-    # usermod -aG wheel $user
-    # We echo a string into the sudoers file. NEVER edit this file manually in a script, so we use tee
-    echo "$user ALL=(ALL) NOPASSWD: ALL" | tee /etc/sudoers.d/$user    
-    echo "User $user now has sudo rights without a password requirement."
+    
+    # Adding the user to the sudo group. This might vary based on the distro.
+    # For Debian/Ubuntu, it's sudo group
+    usermod -aG sudo $user_name
+    
+    # For RHEL/CentOS, it's wheel group
+    # usermod -aG wheel $user_name
+    
+    # Add user to sudoers file without password requirement
+    echo "$user_name ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/$user_name
+    
+    # Setting correct permissions on the sudoers file we just created
+    chmod 0440 /etc/sudoers.d/$user_name
+    
+    echo "User $user_name has been granted sudo access without a password."
 else
-    # User doesn't exist
-    echo "User $user does not exist."
+    # The user does not exist
+    echo "The user $user_name does not exist."
     exit 1
 fi
