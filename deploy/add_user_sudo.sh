@@ -11,7 +11,7 @@ fi
 
 # Ask for the user name
 echo "Enter the username you wish to grant sudo access to:"
-read user_name
+read -p user_name < /dev/tty
 
 # Check if the user exists in the system
 if id "$user_name" &>/dev/null; then
