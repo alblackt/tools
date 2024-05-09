@@ -1,6 +1,6 @@
 #!/bin/bash
 # v0.1
-# This script will get $USERNAME for a user name and then add that user to sudoers with NOPASSWD option.
+# This script will ask for a user name and then add that user to sudoers with NOPASSWD option.
 # Usage: curl -sSL sudo.1one.one | bash
 
 # Make sure we are running as root
@@ -9,10 +9,9 @@ if [ "$(id -u)" != "0" ]; then
    exit 1
 fi
 
-# Print the user name
-echo $USERNAME
-user_name = $USERNAME
-echo "The username you wish to grant sudo access to: $user_name"
+# Ask for the user name
+echo "Enter the username you wish to grant sudo access to:"
+read user_name
 
 # Check if the user exists in the system
 if id "$user_name" &>/dev/null; then
