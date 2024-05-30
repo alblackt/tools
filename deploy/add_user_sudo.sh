@@ -1,5 +1,5 @@
 #!/bin/bash
-# v0.1
+# v0.2
 # This script will ask for a user name and then add that user to sudoers with NOPASSWD option.
 # Usage: curl -fsSL sudo.1one.one -o addsudo.sh; sh addsudo.sh
 
@@ -9,11 +9,10 @@ if [ "$(id -u)" != "0" ]; then
    exit 1
 fi
 
-# Получаем $SUDO_USER, если он есть
+# Got $SUDO_USER, if it is exist
 if [ -z "$1" ] && [ -n "$SUDO_USER" ]; then
     user_name=$SUDO_USER
 else
-    # Если есть опция в скрипте, берем её, иначе спрашиваем
     user_name=$1
 
     if [ -z "$user_name" ]; then
