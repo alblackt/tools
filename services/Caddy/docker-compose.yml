@@ -1,0 +1,17 @@
+  ssl_proxy:
+      build: .
+      ports:
+        - "80:80"
+        - "443:443"
+      environment:
+        - CLOUDFLARE_API_TOKEN=%API_KEY%
+      volumes:
+        - ./Caddyfile:/etc/caddy/Caddyfile
+        - caddy_data:/data
+        - caddy_config:/config
+      depends_on:
+        - pwpush
+
+volumes:
+  caddy_data:
+  caddy_config:
