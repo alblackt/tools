@@ -1,172 +1,409 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset='utf-8'>
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tools</title>
+  <script>
+    try { var t = localStorage.getItem('theme'); if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t; } catch (e) {}
+  </script>
+  <style>
+    :root {
+      --bg: #0d1117;
+      --bg-2: #161b22;
+      --card: #161b22;
+      --card-hover: #1c2330;
+      --border: #30363d;
+      --text: #e6edf3;
+      --muted: #8b949e;
+      --accent: #58a6ff;
+      --accent-2: #3fb950;
+      --code-bg: #0b0f14;
+      --chip: #21262d;
+      --shadow: 0 1px 0 rgba(255,255,255,.03), 0 8px 24px rgba(0,0,0,.25);
+    }
+    :root { color-scheme: dark; }
+    /* Light: by system setting (unless dark is forced) or forced via toggle */
+    @media (prefers-color-scheme: light) {
+      :root:not([data-theme="dark"]) {
+        color-scheme: light;
+        --bg: #f6f8fa;
+        --bg-2: #ffffff;
+        --card: #ffffff;
+        --card-hover: #f3f6fa;
+        --border: #d0d7de;
+        --text: #1f2328;
+        --muted: #656d76;
+        --accent: #0969da;
+        --accent-2: #1a7f37;
+        --code-bg: #f6f8fa;
+        --chip: #eef1f4;
+        --shadow: 0 1px 2px rgba(0,0,0,.04), 0 6px 18px rgba(0,0,0,.06);
+      }
+    }
+    :root[data-theme="light"] {
+      color-scheme: light;
+      --bg: #f6f8fa;
+      --bg-2: #ffffff;
+      --card: #ffffff;
+      --card-hover: #f3f6fa;
+      --border: #d0d7de;
+      --text: #1f2328;
+      --muted: #656d76;
+      --accent: #0969da;
+      --accent-2: #1a7f37;
+      --code-bg: #f6f8fa;
+      --chip: #eef1f4;
+      --shadow: 0 1px 2px rgba(0,0,0,.04), 0 6px 18px rgba(0,0,0,.06);
+    }
 
-    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
-    <link rel="stylesheet" type="text/css" href="stylesheets/github-dark.css" media="screen">
-    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; scroll-padding-top: 76px; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font: 15px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: var(--accent); text-decoration: none; }
+    code, pre { font-family: ui-monospace, SFMono-Regular, "JetBrains Mono", Menlo, Consolas, monospace; }
 
-    <title>Tools</title>
-  </head>
+    /* ---------- Header ---------- */
+    .hero {
+      padding: 48px 20px 28px;
+      background:
+        radial-gradient(1200px 300px at 10% -20%, rgba(88,166,255,.18), transparent 60%),
+        radial-gradient(900px 260px at 100% 0%, rgba(63,185,80,.12), transparent 60%);
+      border-bottom: 1px solid var(--border);
+    }
+    .wrap { max-width: 1100px; margin: 0 auto; }
+    .hero h1 { margin: 0; font-size: 34px; letter-spacing: -.02em; }
+    .hero p { margin: 6px 0 22px; color: var(--muted); }
+    .search {
+      position: relative;
+      max-width: 520px;
+    }
+    .search input {
+      width: 100%;
+      padding: 11px 14px 11px 38px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--bg-2);
+      color: var(--text);
+      font-size: 15px;
+      outline: none;
+      transition: border-color .15s, box-shadow .15s;
+    }
+    .search input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(88,166,255,.2); }
+    .search svg { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--muted); }
+    .search kbd {
+      position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+      font: 12px ui-monospace, monospace; color: var(--muted);
+      border: 1px solid var(--border); border-radius: 5px; padding: 1px 6px;
+    }
 
-  <body>
+    /* ---------- Nav ---------- */
+    nav {
+      position: sticky; top: 0; z-index: 10;
+      background: color-mix(in srgb, var(--bg) 85%, transparent);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+    }
+    nav .wrap {
+      display: flex; gap: 6px; overflow-x: auto; padding: 10px 20px;
+      scrollbar-width: none;
+    }
+    nav .wrap::-webkit-scrollbar { display: none; }
+    nav a {
+      flex: 0 0 auto;
+      padding: 6px 12px; border-radius: 999px;
+      color: var(--muted); font-size: 13.5px; white-space: nowrap;
+      border: 1px solid transparent;
+      transition: all .15s;
+    }
+    nav a:hover, nav a.active { color: var(--text); background: var(--chip); border-color: var(--border); }
 
-    <header>
-      <div class="container">
-        <h1>Tools</h1>
-        <h2>Repository with usefull tools</h2>
+    /* ---------- Layout ---------- */
+    main { padding: 28px 20px 60px; }
+    .group-title {
+      margin: 34px 0 14px; font-size: 13px; text-transform: uppercase;
+      letter-spacing: .08em; color: var(--muted); font-weight: 600;
+    }
+    .group-title:first-child { margin-top: 0; }
+    .grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px 18px 16px;
+      box-shadow: var(--shadow);
+      min-width: 0;
+    }
+    .card.wide { grid-column: 1 / -1; }
+    .card h2 {
+      margin: 0 0 12px; font-size: 16px; display: flex; align-items: center; gap: 8px;
+    }
+    .card h2 .icon {
+      width: 28px; height: 28px; border-radius: 8px;
+      display: grid; place-items: center; font-size: 15px;
+      background: var(--chip); border: 1px solid var(--border);
+    }
+    .card h3 { margin: 18px 0 8px; font-size: 14px; color: var(--muted); font-weight: 600; }
+    .card p { margin: 6px 0; color: var(--muted); font-size: 14px; }
+
+    /* ---------- Links ---------- */
+    .links { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+    .links li { min-width: 0; }
+    .link {
+      display: flex; align-items: center; justify-content: space-between; gap: 10px;
+      padding: 8px 10px; border-radius: 8px; color: var(--text);
+      transition: background .12s;
+    }
+    a.link:hover { background: var(--card-hover); }
+    a.link:hover .link-title { color: var(--accent); }
+    .link-title { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .link-host {
+      flex: 0 0 auto; font-size: 12px; color: var(--muted);
+      font-family: ui-monospace, monospace; max-width: 45%;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .link.static { color: var(--muted); }
+    .sub { margin: 2px 0 4px 18px; padding-left: 10px; border-left: 2px solid var(--border); }
+    .tags { display: flex; flex-wrap: wrap; gap: 6px; padding: 2px 10px 8px; }
+    .tag {
+      font-size: 12px; padding: 2px 8px; border-radius: 999px;
+      background: var(--chip); border: 1px solid var(--border); color: var(--muted);
+      font-family: ui-monospace, monospace;
+    }
+
+    /* ---------- Keys table ---------- */
+    .keys { width: 100%; border-collapse: collapse; font-size: 13.5px; margin: 4px 0 6px; }
+    .keys td { padding: 7px 10px; border-top: 1px solid var(--border); }
+    .keys tr:first-child td { border-top: 0; }
+    .keys td:first-child { color: var(--muted); white-space: nowrap; width: 1%; }
+    .keys code { font-size: 13px; cursor: pointer; white-space: nowrap; }
+    .keys td:last-child { overflow-x: auto; }
+    .keys code:hover { color: var(--accent); }
+
+    /* ---------- Code ---------- */
+    .code {
+      margin: 8px 0 12px; border: 1px solid var(--border); border-radius: 10px;
+      background: var(--code-bg); overflow: hidden;
+    }
+    .code-head {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 6px 8px 6px 12px; border-bottom: 1px solid var(--border);
+      font-size: 12px; color: var(--muted);
+    }
+    .code pre { margin: 0; padding: 12px 14px; overflow-x: auto; font-size: 13px; line-height: 1.6; }
+    .code .c { color: var(--muted); }
+    button.copy {
+      font: 12px inherit; font-family: inherit;
+      background: var(--chip); color: var(--text);
+      border: 1px solid var(--border); border-radius: 6px;
+      padding: 3px 10px; cursor: pointer; transition: all .15s;
+    }
+    button.copy:hover { border-color: var(--accent); color: var(--accent); }
+    button.copy.ok { border-color: var(--accent-2); color: var(--accent-2); }
+    .or { text-align: center; color: var(--muted); font-size: 12px; margin: -4px 0 4px; }
+
+    /* ---------- Steps ---------- */
+    .steps { counter-reset: s; list-style: none; margin: 0; padding: 0; }
+    .steps > li { counter-increment: s; position: relative; padding: 0 0 6px 36px; }
+    .steps > li::before {
+      content: counter(s); position: absolute; left: 0; top: 0;
+      width: 24px; height: 24px; border-radius: 50%;
+      display: grid; place-items: center; font-size: 12px; font-weight: 600;
+      background: var(--chip); border: 1px solid var(--border); color: var(--muted);
+    }
+    .steps > li > p:first-child { margin-top: 2px; color: var(--text); }
+    .note {
+      margin: 6px 0 10px; padding: 8px 12px; border-radius: 8px; font-size: 13.5px;
+      border: 1px solid var(--border); background: var(--chip); color: var(--muted);
+    }
+
+    /* ---------- Theme toggle ---------- */
+    .hero .wrap { position: relative; }
+    .theme-toggle {
+      position: absolute; top: 0; right: 0;
+      width: 40px; height: 40px; border-radius: 10px;
+      display: grid; place-items: center; cursor: pointer;
+      background: var(--bg-2); color: var(--text);
+      border: 1px solid var(--border); transition: border-color .15s, color .15s;
+    }
+    .theme-toggle:hover { border-color: var(--accent); color: var(--accent); }
+    .theme-toggle .sun { display: none; }
+    .is-dark .theme-toggle .sun { display: block; }
+    .is-dark .theme-toggle .moon { display: none; }
+    body { transition: background-color .2s, color .2s; }
+
+    .hidden { display: none !important; }
+    .empty { text-align: center; color: var(--muted); padding: 40px 0; }
+
+    footer { text-align: center; color: var(--muted); font-size: 13px; padding: 24px 20px 40px; border-top: 1px solid var(--border); }
+
+    @media (max-width: 640px) {
+      .hero { padding: 32px 16px 22px; }
+      .hero h1 { font-size: 28px; }
+      main { padding: 20px 16px 48px; }
+      nav .wrap { padding: 10px 16px; }
+      .grid { grid-template-columns: 1fr; }
+      .search kbd { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="hero">
+    <div class="wrap">
+      <button class="theme-toggle" id="themeToggle" type="button" title="Toggle theme" aria-label="Toggle theme">
+        <svg class="moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </button>
+      <h1>Tools</h1>
+      <p>Repository with useful tools</p>
+      <label class="search">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M10.68 11.74a6 6 0 1 1 1.06-1.06l3.04 3.04a.75.75 0 1 1-1.06 1.06l-3.04-3.04ZM11.5 7a4.5 4.5 0 1 0-9 0 4.5 4.5 0 0 0 9 0Z"/></svg>
+        <input id="q" type="text" placeholder="Search links, tools, commands…" autocomplete="off">
+        <kbd>/</kbd>
+      </label>
+    </div>
+  </header>
+
+  <nav>
+    <div class="wrap" id="nav">
+      <a href="#devops">DevOps</a>
+      <a href="#urls">URLs</a>
+      <a href="#soft">Soft</a>
+      <a href="#interesting">Interesting</a>
+      <a href="#web">Web admin</a>
+      <a href="#ms-admin">Microsoft admin</a>
+      <a href="#chocolatey">Chocolatey</a>
+      <a href="#bginfo">BGInfo</a>
+      <a href="#wireguard">WireGuard</a>
+      <a href="#wg-windows">WG on Windows</a>
+      <a href="#iptables">iptables</a>
+      <a href="#autoinstall">Autoinstall</a>
+    </div>
+  </nav>
+
+  <main>
+    <div class="wrap">
+
+
+      <!-- ================= LINKS ================= -->
+      <div class="group-title">Links to commonly used programs</div>
+      <div class="grid">
+
+        <section class="card" id="devops">
+          <h2><span class="icon">⚙️</span>DevOps</h2>
+          <ul class="links">
+            <li><a class="link" href="https://dzone.com/articles/how-to-prepare-for-your-devops-interview"><span class="link-title">DevOps Knowledge Base</span></a></li>
+          </ul>
+          <h3>Docker installation script</h3>
+          <div class="code"><div class="code-head"><span>bash</span><button class="copy">Copy</button></div><pre><code>curl -sSL docker.igot.pw | bash</code></pre></div>
+          <div class="or">or</div>
+          <div class="code"><div class="code-head"><span>bash</span><button class="copy">Copy</button></div><pre><code>wget -O- docker.igot.pw | bash</code></pre></div>
+        </section>
+
+        <section class="card" id="urls">
+          <h2><span class="icon">🔗</span>URLs</h2>
+          <ul class="links">
+            <li><a class="link" href="http://www.cpubenchmark.net"><span class="link-title">CPU Benchmark</span></a></li>
+            <li>
+              <a class="link" href="https://syncthing.net/"><span class="link-title">Syncthing</span></a>
+              <ul class="links sub">
+                <li><a class="link" href="https://github.com/canton7/SyncTrayzor"><span class="link-title">SyncTrayzor</span></a></li>
+              </ul>
+            </li>
+            <li><a class="link" href="https://anydesk.com"><span class="link-title">AnyDesk</span></a></li>
+            <li><a class="link" href="https://devhints.io"><span class="link-title">Cheatsheets</span></a></li>
+            <li><a class="link" href="https://whoer.net"><span class="link-title">VPN test</span></a></li>
+            <li><a class="link" href="https://github.com/yt-dlp/yt-dlp"><span class="link-title">YouTube downloader</span></a></li>
+            <li><a class="link" href="https://esxi-patches.v-front.de/ESXi-7.0.0.html"><span class="link-title">VMware Updater</span></a></li>
+            <li><a class="link" href="http://tldr.sh"><span class="link-title">tldr — simplified man pages</span></a></li>
+          </ul>
+        </section>
+
+        <section class="card" id="soft">
+          <h2><span class="icon">🧰</span>Soft</h2>
+          <h3 style="margin-top:0">VMware ESXi</h3>
+          <table class="keys">
+            <tr><td>8.0</td><td><code title="Click to copy">JJ49K-66L41-M88P9-0V8AP-98860</code></td></tr>
+            <tr><td>7.0</td><td><code title="Click to copy">H4021-0C1E2-483G9-0U2A4-8N83M</code></td></tr>
+            <tr><td>6.7, 6.5, 6.0</td><td><code title="Click to copy">1J425-82JDL-58548-0C92P-CTN4H</code></td></tr>
+            <tr><td>6.0</td><td><code title="Click to copy">1J601-4ULEJ-18180-08AUM-8XTPM</code></td></tr>
+          </table>
+          <ul class="links">
+            <li><a class="link" href="https://esxi-patches.v-front.de/ESXi-8.0.0.html"><span class="link-title">ESXi Patches</span></a></li>
+            <li><a class="link" href="https://the.earth.li/%7Esgtatham/putty/latest/x86/putty.exe"><span class="link-title">PuTTY</span></a></li>
+            <li><a class="link" href="https://www.fosshub.com/KiTTY.html/kitty.exe"><span class="link-title">KiTTY</span></a></li>
+            <li><a class="link" href="http://web.archive.org/web/20160308204533/http://www.myac.pro/ftp/victoria_447.zip"><span class="link-title">Victoria</span></a></li>
+            <li>
+              <div class="link static"><span class="link-title">Sysinternals</span></div>
+              <div class="tags"><span class="tag">autoruns</span><span class="tag">procmon</span><span class="tag">procexp</span></div>
+            </li>
+            <li><div class="link static"><span class="link-title">WinDirStat</span></div></li>
+            <li><div class="link static"><span class="link-title">CrystalDiskMark</span></div></li>
+            <li><a class="link" href="http://www.classicshell.net/translations/"><span class="link-title">Classic Shell</span></a></li>
+            <li><a class="link" href="http://www.site2unblock.com/win-updates-disabler/"><span class="link-title">Block Windows Updates</span></a></li>
+            <li><a class="link" href="http://www.nirsoft.net/utils/bluescreenview_setup.exe"><span class="link-title">BlueScreenView</span></a></li>
+            <li><a class="link" href="http://www.komodolabs.com/downloads/slitheris_installer.exe"><span class="link-title">IP Scanner</span></a></li>
+            <li><a class="link" href="https://yadi.sk/d/kIDUlYntgm3aMA"><span class="link-title">Clear Cached Memory in Win2008</span></a></li>
+          </ul>
+        </section>
+
+        <section class="card" id="interesting">
+          <h2><span class="icon">🌍</span>Interesting URLs</h2>
+          <ul class="links">
+            <li><a class="link" href="https://oec.world/en/profile/country/rus"><span class="link-title">International Trade Data — Russia</span></a></li>
+          </ul>
+        </section>
+
+        <section class="card" id="web">
+          <h2><span class="icon">🕸️</span>Web admin</h2>
+          <ul class="links">
+            <li><a class="link" href="http://www.softwareqatest.com/qatweb1.html#PAGE_SPEED"><span class="link-title">Web Test Tool</span></a></li>
+          </ul>
+        </section>
 
       </div>
-    </header>
 
-    <div class="container">
-      <section id="main_content">
-      
-        <h2>
-<a id="Tega" class="anchor" href="#links-to-common-used-programs" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Tega</h2>
-        
-<h3>
-<a id="Corp. Portal Links" class="anchor" href="#tega" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Corp. Portal Links</h3>
+      <!-- ================= MICROSOFT ADMIN ================= -->
+      <div class="group-title">Microsoft admin</div>
+      <div class="grid">
+        <section class="card" id="ms-admin">
+          <h2><span class="icon">☁️</span>Portals</h2>
+          <ul class="links">
+            <li><a class="link" href="https://msportals.io/"><span class="link-title">All Microsoft Portal Link Center</span></a></li>
+            <li><a class="link" href="https://azure.microsoft.com"><span class="link-title">Microsoft Azure</span></a></li>
+          </ul>
+        </section>
+      </div>
 
-<ol>
-<li><a href="https://wiki.yandex.ru/">Wiki</a></li>
-<li><a href="https://quickref.me/">CheatShit</a></li>
+      <!-- ================= SNIPPETS ================= -->
+      <div class="group-title">Snippets &amp; how-tos</div>
+      <div class="grid">
 
-</ol>           
-        
-        <h2>
-<a id="links-to-common-used-programs" class="anchor" href="#links-to-common-used-programs" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Links to common used programs</h2>
+        <section class="card wide" id="chocolatey">
+          <h2><span class="icon">🍫</span>Chocolatey</h2>
+          <h3 style="margin-top:0">PowerShell installation script</h3>
+          <div class="code"><div class="code-head"><span>powershell</span><button class="copy">Copy</button></div><pre><code>Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))</code></pre></div>
 
+          <h3>Packages for users</h3>
+          <div class="code"><div class="code-head"><span>powershell</span><button class="copy">Copy</button></div><pre><code>choco install -y 7zip far adobereader googlechrome firefox opera sysinternals anydesk</code></pre></div>
 
-        
-<h3>
-<a id="DevOps" class="anchor" href="#devops" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>DevOps</h3>
+          <h3>Packages for servers</h3>
+          <div class="code"><div class="code-head"><span>powershell</span><button class="copy">Copy</button></div><pre><code>choco install -y 7zip far firefox kitty.portable sysinternals bginfo vmware-tools</code></pre></div>
 
-<ol>
-<li><a href="https://dzone.com/articles/how-to-prepare-for-your-devops-interview">DevOps Knowlege Base</a></li>
-</ol>        
+          <h3>Useful packages</h3>
+          <div class="code"><div class="code-head"><span>powershell</span><button class="copy">Copy</button></div><pre><code>choco install -y windirstat winscp vmwarevsphereclient Lockhunter ccleaner libreoffice-fresh SublimeText3</code></pre></div>
+        </section>
 
-   
-<p>Docker Installation script: </p>
-
-<pre><code>curl -sSL docker.igot.pw | bash
-  or
-wget -O- docker.igot.pw | bash
-</code></pre>
-        
-  
-<h3>
-<a id="urls" class="anchor" href="#urls" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>URLS</h3>
-
-<ol>
-<li><a href="https://msportals.io/">All Microsoft Portal Link Center</a></li>
-<li><a href="https://azure.microsoft.com">Microsoft Azure</a></li>
-<li><a href="http://www.cpubenchmark.net">CPU Benchmark</a></li>
-<li><a href="https://syncthing.net/">Syncthing</a></li>
-<li><a href="https://anydesk.com">Anydesk</a></li>    
-<li><a href="https://devhints.io">Cheatsheets</a></li>
-<li><a href="https://whoer.net">VPN test</a></li>
-<li><a href="https://github.com/yt-dlp/yt-dlp">Youtube downloader</a></li>
-<li><a href="https://esxi-patches.v-front.de/ESXi-7.0.0.html">VmWare Updater</a></li>
-  
-  
-<ul>
-<li><a href="https://github.com/canton7/SyncTrayzor">SyncTrayzor</a></li>  
-</ul>
-<li><a href="http://tldr.sh">tldr: Simplified and community-driven man pages</a></li>
-</ol>
-       
-<h3>
-<a id="soft" class="anchor" href="#soft" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Soft</h3>
-
-<ol>
-<li>VmWare ESXi
-<ul>
-
-<li>8.0 
-JJ49K-66L41-M88P9-0V8AP-98860
-</li>
-<li>7.0
-H4021-0C1E2-483G9-0U2A4-8N83M</li>
-<li>6.7, 6.5, 6.0
-1J425-82JDL-58548-0C92P-CTN4H</li>
-<li>6.0
-1J601-4ULEJ-18180-08AUM-8XTPM</li>
-</li>
-</ul>
-</li>
-<li><a href="https://esxi-patches.v-front.de/ESXi-8.0.0.html">ESXi Patches</a></li>
-<li><a href="https://the.earth.li/%7Esgtatham/putty/latest/x86/putty.exe">Putty</a></li>
-<li><a href="https://nextcloud.n2ip.ru/s/SBHAeygdQdpYt62">LicDataViewer</a></li>      
-<li><a href="https://www.fosshub.com/KiTTY.html/kitty.exe">Kitty</a></li>
-<li><a href="http://web.archive.org/web/20160308204533/http://www.myac.pro/ftp/victoria_447.zip">Victoria</a></li>
-<li>Sysinternals
-  
-<ul>
-<li>autoruns</li>
-<li>procmon</li>
-<li>procexp</li>
-</ul>
-</li>
-<li>WindirStat</li>
-<li>Crystaldiskmark</li>
-<li><a href="http://www.classicshell.net/translations/">Classic Shell</a></li>
-<li><a href="http://www.site2unblock.com/win-updates-disabler/">Block Windows Updates</a></li>
-<li><a href="http://www.nirsoft.net/utils/bluescreenview_setup.exe">Bluescreenview</a></li>
-<li><a href="http://www.komodolabs.com/downloads/slitheris_installer.exe">IP Scanner</a></li>
-<li><a href="https://yadi.sk/d/kIDUlYntgm3aMA">Clear Cached Memory in Win2008</a></li>
-<li><a href="https://nextcloud.n2ip.ru/s/qRmpppJj7JmqsA8">HASP AKS Monitor</a></li>  
-  
-</ol>
-
-
-        
-<h3>
-<a id="Interesting Urls" class="anchor" href="#selfedu" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>InterestingUrls</h3>
-
-<ol>
-<li><a href="https://oec.world/en/profile/country/rus">International Trade Data - Russia</a></li>
-</ol>        
-
-  
-  
-<h3>
-<a id="web" class="anchor" href="#web" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Web admin</h3>
-<ol>
-<li><a href="http://www.softwareqatest.com/qatweb1.html#PAGE_SPEED">Web Test Tool</a></li>
-</ol>        
-        
-        
-<h3>
-<a id="chocolatey" class="anchor" href="#chocolatey" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Chocolatey</h3>
-
-<p>PowerShell Installation script: </p>
-
-<pre><code>Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))    
-
-</code></pre>    
-   
-    
-<p>Packages for users</p>   
-        
-<pre><code>choco install -y 7zip far adobereader googlechrome firefox opera sysinternals anydesk
-</code></pre>
-
-<p>Packages for servers</p>
-        
-<pre><code>choco install -y 7zip far firefox kitty.portable sysinternals bginfo vmware-tools
-</code></pre>
-    
-<p>Usefull Packages</p>
-        
-<pre><code>choco install -y windirstat winscp vmwarevsphereclient Lockhunter ccleaner libreoffice-fresh SublimeText3
-</code></pre>
-        
-<p>BGInfo</p>
-        
-<pre><code>Host Name:	&lt;Host Name&gt;
+        <section class="card" id="bginfo">
+          <h2><span class="icon">🖥️</span>BGInfo</h2>
+          <div class="code"><div class="code-head"><span>template</span><button class="copy">Copy</button></div><pre><code>Host Name:	&lt;Host Name&gt;
 IP Address:	&lt;IP Address&gt;
 
 Boot Time:	&lt;Boot Time&gt;
@@ -177,91 +414,192 @@ Logon Server:	&lt;Logon Server&gt;
 Memory:	&lt;Memory&gt;
 OS Version:	&lt;OS Version&gt;
 User Name:	&lt;User Name&gt;
-Volumes:	&lt;Volumes&gt;
-</code></pre>
-    
-    
-   
-<p>Template for WireGuard</p>
-        
-<pre><code>[Interface]
+Volumes:	&lt;Volumes&gt;</code></pre></div>
+        </section>
+
+        <section class="card" id="wireguard">
+          <h2><span class="icon">🔐</span>WireGuard template</h2>
+          <div class="code"><div class="code-head"><span>wg.conf</span><button class="copy">Copy</button></div><pre><code>[Interface]
 PrivateKey = %PrivateKeyThere%
-#Client IP
-Address = 10.20.0.2/32 
+<span class="c">#Client IP</span>
+Address = 10.20.0.2/32
 
 [Peer]
 PublicKey = %PublicKeyOfServer%
-# All IP And Network that will be accepted thru VPN
+<span class="c"># All IP And Network that will be accepted thru VPN</span>
 AllowedIPs = 192.168.21.0/24, 10.20.0.0/24
-#Server address or IP with port 
-Endpoint = server.address.com:13231
-</code></pre>    
-    
- <li><a href="https://www.procustodibus.com/blog/2021/03/wireguard-allowedips-calculator/">WireGuard Allowed IP Calculator</a></li>   
+<span class="c">#Server address or IP with port</span>
+Endpoint = server.address.com:13231</code></pre></div>
+          <ul class="links">
+            <li><a class="link" href="https://www.procustodibus.com/blog/2021/03/wireguard-allowedips-calculator/"><span class="link-title">WireGuard AllowedIPs Calculator</span></a></li>
+          </ul>
+        </section>
 
-<p></p>
-    
-<h3><a id="WG" class="anchor" href="#wg" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>
-  WireGuard Windows Installation</h3>  
-    
-<p>WireGuard with non-admin account in Windows 10/11 PRO</p>
-    
-<pre><code>
-1. Add Registry value From PowerShell: 
-  New-ItemProperty "hklm:\software\wireguard" -Name "LimitedOperatorUI" -Value 1 -PropertyType "DWord" -Force
-2. Add your user to the group Network Configurator Operators. from PowerShell run:
- Add-LocalGroupMember -Group "Network Configuration Operators" -Member "$username"
+        <section class="card wide" id="wg-windows">
+          <h2><span class="icon">🪟</span>WireGuard Windows installation</h2>
 
-</code></pre>    
-    
-<p>WireGuard with non-admin account in Windows 10/11 HOME</p>
-    
-<pre><code>
-1. Download psexec from the sysinternals page:
-https://docs.microsoft.com/en-us/sysinternals/downloads/psexec
-or install it with chololatey 
-'choco install psexec'
+          <h3 style="margin-top:0">Non-admin account — Windows 10/11 PRO</h3>
+          <ol class="steps">
+            <li>
+              <p>Add registry value from PowerShell:</p>
+              <div class="code"><div class="code-head"><span>powershell</span><button class="copy">Copy</button></div><pre><code>New-ItemProperty "hklm:\software\wireguard" -Name "LimitedOperatorUI" -Value 1 -PropertyType "DWord" -Force</code></pre></div>
+            </li>
+            <li>
+              <p>Add your user to the group Network Configuration Operators. From PowerShell run:</p>
+              <div class="code"><div class="code-head"><span>powershell</span><button class="copy">Copy</button></div><pre><code>Add-LocalGroupMember -Group "Network Configuration Operators" -Member "$username"</code></pre></div>
+            </li>
+          </ol>
 
-2. Download nco.reg from this link
-https://nextcloud.n2ip.ru/s/nXNkqn5aCQ36wkX
+          <h3>Non-admin account — Windows 10/11 HOME</h3>
+          <ol class="steps">
+            <li>
+              <p>Download psexec from the <a href="https://docs.microsoft.com/en-us/sysinternals/downloads/psexec">Sysinternals page</a>, or install it with Chocolatey:</p>
+              <div class="code"><div class="code-head"><span>powershell</span><button class="copy">Copy</button></div><pre><code>choco install psexec</code></pre></div>
+            </li>
+            <li><p>Download <code>nco.reg</code>.</p></li>
+            <li>
+              <p>Open an administrator console and type:</p>
+              <div class="code"><div class="code-head"><span>cmd</span><button class="copy">Copy</button></div><pre><code>psexec -i -s regedit</code></pre></div>
+            </li>
+            <li><p>Choose <b>File → Import</b> and select the <code>nco.reg</code> file.</p></li>
+            <li>
+              <p>Add your user to the group from PowerShell:</p>
+              <div class="code"><div class="code-head"><span>powershell</span><button class="copy">Copy</button></div><pre><code>Add-LocalGroupMember -Group "Network Configuration Operators" -Member "$username"</code></pre></div>
+              <div class="note"><b>Or</b> from the GUI: run <code>control userpasswords2</code>, choose the user you need and the group “Network Configuration Operators”.</div>
+            </li>
+            <li>
+              <p>Add registry value from PowerShell:</p>
+              <div class="code"><div class="code-head"><span>powershell</span><button class="copy">Copy</button></div><pre><code>New-ItemProperty "hklm:\software\wireguard" -Name "LimitedOperatorUI" -Value 1 -PropertyType "DWord" -Force</code></pre></div>
+            </li>
+          </ol>
+        </section>
 
-3. Open up an administrator console and type 
-`psexec -i -s regedit`.
+        <section class="card" id="iptables">
+          <h2><span class="icon">🧱</span>iptables hints</h2>
+          <div class="code"><div class="code-head"><span>bash</span><button class="copy">Copy</button></div><pre><code>iptables -A INPUT -p tcp --dport 80 -j DROP</code></pre></div>
+          <div class="code"><div class="code-head"><span>bash</span><button class="copy">Copy</button></div><pre><code>iptables -L INPUT -n --line-numbers</code></pre></div>
+          <div class="code"><div class="code-head"><span>bash</span><button class="copy">Copy</button></div><pre><code>iptables -D INPUT %NUM%</code></pre></div>
+        </section>
 
-4. Choose File->Import and select the nco.reg file.
+        <section class="card" id="autoinstall">
+          <h2><span class="icon">🚀</span>Autoinstall scripts</h2>
+          <h3 style="margin-top:0">Install Docker on Ubuntu 22.04</h3>
+          <div class="code"><div class="code-head"><span>bash</span><button class="copy">Copy</button></div><pre><code>curl https://raw.githubusercontent.com/alblackt/tools/master/deploy/ubuntu_docker_install.sh | bash</code></pre></div>
+          <h3>Croc installation script</h3>
+          <div class="code"><div class="code-head"><span>bash</span><button class="copy">Copy</button></div><pre><code>curl https://getcroc.com | bash</code></pre></div>
+        </section>
 
-5. Add your user to the group from PowerShell:
- Add-LocalGroupMember -Group "Network Configuration Operators" -Member "$username"
+      </div>
 
-OR! You can do it from GUI: Run "control userpasswords2" and choose User you need and group "Network Configuration Operators"
-
-6. Add Registry value From PowerShell: 
-  New-ItemProperty "hklm:\software\wireguard" -Name "LimitedOperatorUI" -Value 1 -PropertyType "DWord" -Force
-</code></pre>    
-    
-    
-    
-    
-<a id="iptables" class="anchor" href="#iptables" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Iptables hints</h3>        
-
-<pre><code>iptables -A INPUT -p tcp --dport 80 -j DROP
-</code></pre>
-<pre><code>iptables -L INPUT -n --line-numbers
-</code></pre>
-<pre><code>iptables -D INPUT %NUM%
-</code></pre>
-
-<a id="devops" class="anchor" href="#devops" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Autoinstall scripts</h3>        
-
-<pre><code>Install Docker on Ubuntu 22.04
-curl https://raw.githubusercontent.com/alblackt/tools/master/deploy/ubuntu_docker_install.sh | bash
-
-</code></pre>  
-  
-  
-      </section>
+      <div class="empty hidden" id="empty">Nothing found.</div>
     </div>
+  </main>
 
-    
-  </body>
+  <footer>Tools · <a href="https://github.com/alblackt/tools">alblackt/tools</a></footer>
+
+  <script>
+    // Show hostname next to each link; open external links in new tab
+    document.querySelectorAll('a.link').forEach(a => {
+      try {
+        const host = new URL(a.href).hostname.replace(/^www\./, '');
+        const s = document.createElement('span');
+        s.className = 'link-host';
+        s.textContent = host;
+        a.appendChild(s);
+      } catch (e) {}
+    });
+    document.querySelectorAll('a[href^="http"]').forEach(a => {
+      a.target = '_blank';
+      a.rel = 'noopener noreferrer';
+    });
+
+    // Copy helpers
+    function copyText(text, el, okLabel) {
+      const done = () => {
+        const prev = el.textContent;
+        el.classList.add('ok');
+        el.textContent = okLabel || 'Copied';
+        setTimeout(() => { el.classList.remove('ok'); el.textContent = prev; }, 1200);
+      };
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text).then(done).catch(() => fallback(text, done));
+      } else fallback(text, done);
+    }
+    function fallback(text, done) {
+      const t = document.createElement('textarea');
+      t.value = text; t.style.position = 'fixed'; t.style.opacity = '0';
+      document.body.appendChild(t); t.select();
+      try { document.execCommand('copy'); done(); } catch (e) {}
+      t.remove();
+    }
+    document.querySelectorAll('button.copy').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const code = btn.closest('.code').querySelector('code');
+        copyText(code.innerText, btn);
+      });
+    });
+    document.querySelectorAll('.keys code').forEach(c => {
+      c.addEventListener('click', () => {
+        const orig = c.textContent;
+        copyText(orig, { classList: c.classList, set textContent(v) { c.textContent = v; }, get textContent() { return orig; } }, 'Copied ✓');
+      });
+    });
+
+    // Theme toggle (remembers choice; otherwise follows system)
+    const root = document.documentElement;
+    const mq = window.matchMedia('(prefers-color-scheme: dark)');
+    const isDark = () => root.dataset.theme ? root.dataset.theme === 'dark' : mq.matches;
+    const syncTheme = () => root.classList.toggle('is-dark', isDark());
+    syncTheme();
+    mq.addEventListener('change', syncTheme);
+    document.getElementById('themeToggle').addEventListener('click', () => {
+      const next = isDark() ? 'light' : 'dark';
+      root.dataset.theme = next;
+      try { localStorage.setItem('theme', next); } catch (e) {}
+      syncTheme();
+    });
+
+    // Search filter
+    const q = document.getElementById('q');
+    const cards = [...document.querySelectorAll('.card')];
+    const empty = document.getElementById('empty');
+    q.addEventListener('input', () => {
+      const term = q.value.trim().toLowerCase();
+      let any = false;
+      cards.forEach(card => {
+        const items = card.querySelectorAll('.links > li, .code, .keys tr, .steps > li');
+        const titleHit = card.querySelector('h2').textContent.toLowerCase().includes(term);
+        let hit = !term || titleHit;
+        items.forEach(it => {
+          const m = !term || titleHit || it.textContent.toLowerCase().includes(term);
+          it.classList.toggle('hidden', !m);
+          if (m) hit = true;
+        });
+        card.classList.toggle('hidden', !hit);
+        if (hit) any = true;
+      });
+      document.querySelectorAll('.grid').forEach(g => {
+        const vis = [...g.children].some(c => !c.classList.contains('hidden'));
+        g.classList.toggle('hidden', !vis);
+        g.previousElementSibling.classList.toggle('hidden', !vis);
+      });
+      empty.classList.toggle('hidden', any);
+    });
+    document.addEventListener('keydown', e => {
+      if (e.key === '/' && document.activeElement !== q) { e.preventDefault(); q.focus(); }
+      if (e.key === 'Escape' && document.activeElement === q) { q.value = ''; q.dispatchEvent(new Event('input')); q.blur(); }
+    });
+
+    // Highlight active section in nav
+    const navLinks = [...document.querySelectorAll('#nav a')];
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(en => {
+        if (en.isIntersecting) {
+          navLinks.forEach(l => l.classList.toggle('active', l.getAttribute('href') === '#' + en.target.id));
+        }
+      });
+    }, { rootMargin: '-40% 0px -55% 0px' });
+    cards.forEach(c => obs.observe(c));
+  </script>
+</body>
 </html>
