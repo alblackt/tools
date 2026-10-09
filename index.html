@@ -156,16 +156,16 @@
     .links { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
     .links li { min-width: 0; }
     .link {
-      display: flex; align-items: center; justify-content: space-between; gap: 10px;
-      padding: 8px 10px; border-radius: 8px; color: var(--text);
+      display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 1px;
+      padding: 6px 10px; border-radius: 8px; color: var(--text);
       transition: background .12s;
     }
     a.link:hover { background: var(--card-hover); }
     a.link:hover .link-title { color: var(--accent); }
-    .link-title { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .link-title { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .link-host {
-      flex: 0 0 auto; font-size: 12px; color: var(--muted);
-      font-family: ui-monospace, monospace; max-width: 45%;
+      max-width: 100%; font-size: 11.5px; color: var(--muted);
+      font-family: ui-monospace, monospace;
       overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
     }
     .link.static { color: var(--muted); }
@@ -238,6 +238,36 @@
     .is-dark .theme-toggle .moon { display: none; }
     body { transition: background-color .2s, color .2s; }
 
+    /* ---------- Favorites ---------- */
+    .link-row { display: flex; align-items: center; gap: 2px; }
+    .link-row > .link { flex: 1 1 auto; min-width: 0; }
+    button.star {
+      flex: 0 0 auto; width: 28px; height: 28px; border-radius: 6px;
+      display: grid; place-items: center; cursor: pointer;
+      background: transparent; border: 0; color: var(--muted);
+      opacity: 0; transition: opacity .12s, color .12s, background .12s;
+    }
+    .link-row:hover button.star, button.star:focus-visible { opacity: .8; }
+    button.star:hover { background: var(--card-hover); color: var(--text); }
+    button.star.on { opacity: 1; color: #d29922; }
+    button.star.on svg { fill: currentColor; }
+    @media (hover: none) { button.star { opacity: .5; } }
+    .fav-list { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); column-gap: 12px; }
+    #favTitle.hidden + .grid + .group-title { margin-top: 0; }
+
+    /* ---------- Collapsible cards ---------- */
+    .card h2 { cursor: pointer; user-select: none; }
+    .card h2 .chev {
+      margin-left: auto; width: 28px; height: 28px; border-radius: 6px;
+      display: grid; place-items: center; color: var(--muted);
+      background: transparent; border: 0; cursor: pointer; transition: transform .15s, background .12s;
+    }
+    .card h2:hover .chev { background: var(--card-hover); color: var(--text); }
+    .card.collapsed h2 .chev { transform: rotate(-90deg); }
+    body:not(.searching) .card.collapsed > :not(h2) { display: none; }
+    body:not(.searching) .card.collapsed { align-self: start; }
+    body:not(.searching) .card.collapsed h2 { margin-bottom: 0; }
+
     /* ---------- Year progress ---------- */
     .yearbar {
       margin: 0 0 22px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
@@ -286,10 +316,10 @@
 
   <nav>
     <div class="wrap" id="nav">
-      <a href="#devops">DevOps</a>
+      <a href="#autoinstall">Autoinstall</a>
       <a href="#urls">URLs</a>
       <a href="#soft">Soft</a>
-      <a href="#interesting">Interesting</a>
+      <a href="#interesting">Worth a look</a>
       <a href="#web">Web admin</a>
       <a href="#ms-admin">Microsoft admin</a>
       <a href="#chocolatey">Chocolatey</a>
@@ -297,7 +327,7 @@
       <a href="#wireguard">WireGuard</a>
       <a href="#wg-windows">WG on Windows</a>
       <a href="#iptables">iptables</a>
-      <a href="#autoinstall">Autoinstall</a>
+      <a href="#devops">DevOps</a>
     </div>
   </nav>
 
@@ -305,19 +335,27 @@
     <div class="wrap">
 
 
+      <!-- ================= FAVORITES ================= -->
+      <div class="group-title hidden" id="favTitle">Favorites</div>
+      <div class="grid hidden" id="favGrid">
+        <section class="card wide" id="favorites" data-empty="1">
+          <h2><span class="icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.8 5.7 6.2.9-4.5 4.4 1 6.2L12 17.3 6.5 20.2l1-6.2L3 9.6l6.2-.9z"/></svg></span>Favorites</h2>
+          <ul class="links fav-list" id="favList"></ul>
+        </section>
+      </div>
+
       <!-- ================= LINKS ================= -->
       <div class="group-title">Links to commonly used programs</div>
       <div class="grid">
 
-        <section class="card" id="devops">
-          <h2><span class="icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg></span>DevOps</h2>
-          <ul class="links">
-            <li><a class="link" href="https://dzone.com/articles/how-to-prepare-for-your-devops-interview"><span class="link-title">DevOps Knowledge Base</span></a></li>
-          </ul>
-          <h3>Docker installation script</h3>
+        <section class="card" id="autoinstall">
+          <h2><span class="icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><polyline points="7 10 12 15 17 10"/><line x1="4" y1="21" x2="20" y2="21"/></svg></span>Autoinstall scripts</h2>
+          <h3 style="margin-top:0">Docker installation script</h3>
           <div class="code"><div class="code-head"><span>bash</span><button class="copy">Copy</button></div><pre><code>curl -sSL docker.igot.pw | bash</code></pre></div>
           <div class="or">or</div>
           <div class="code"><div class="code-head"><span>bash</span><button class="copy">Copy</button></div><pre><code>wget -O- docker.igot.pw | bash</code></pre></div>
+          <h3>Croc installation script</h3>
+          <div class="code"><div class="code-head"><span>bash</span><button class="copy">Copy</button></div><pre><code>curl https://getcroc.com | bash</code></pre></div>
         </section>
 
         <section class="card" id="urls">
@@ -368,7 +406,7 @@
         </section>
 
         <section class="card" id="interesting">
-          <h2><span class="icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a14 14 0 0 1 0 18a14 14 0 0 1 0-18z"/></svg></span>Interesting URLs</h2>
+          <h2><span class="icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a14 14 0 0 1 0 18a14 14 0 0 1 0-18z"/></svg></span>Worth a look</h2>
           <ul class="links">
             <li><a class="link" href="https://oec.world/en/profile/country/rus"><span class="link-title">International Trade Data — Russia</span></a></li>
           </ul>
@@ -387,11 +425,48 @@
       <div class="group-title">Microsoft admin</div>
       <div class="grid">
         <section class="card" id="ms-admin">
-          <h2><span class="icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 18a5 5 0 0 1-.5-9.97A6 6 0 0 1 18 8.5a4.5 4.5 0 0 1-.5 9.5z"/></svg></span>Portals</h2>
+          <h2><span class="icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7"/><path d="M18.5 14.5A6.5 6.5 0 0 1 21.5 20"/></svg></span>Microsoft 365 &amp; Entra</h2>
           <ul class="links">
             <li><a class="link" href="https://msportals.io/"><span class="link-title">All Microsoft Portal Link Center</span></a></li>
-            <li><a class="link" href="https://azure.microsoft.com"><span class="link-title">Microsoft Azure</span></a></li>
+            <li><a class="link" href="https://admin.microsoft.com"><span class="link-title">Microsoft 365 admin center</span></a></li>
+            <li><a class="link" href="https://entra.microsoft.com"><span class="link-title">Microsoft Entra admin center</span></a></li>
+            <li><a class="link" href="https://admin.exchange.microsoft.com"><span class="link-title">Exchange admin center</span></a></li>
+            <li><a class="link" href="https://admin.teams.microsoft.com"><span class="link-title">Teams admin center</span></a></li>
+            <li><a class="link" href="https://intune.microsoft.com"><span class="link-title">Intune admin center</span></a></li>
+            <li><a class="link" href="https://security.microsoft.com"><span class="link-title">Microsoft Defender portal</span></a></li>
+            <li><a class="link" href="https://purview.microsoft.com"><span class="link-title">Microsoft Purview portal</span></a></li>
+            <li><div class="link static"><span class="link-title">SharePoint admin center</span><span class="link-host">&lt;tenant&gt;-admin.sharepoint.com</span></div></li>
           </ul>
+        </section>
+
+        <section class="card" id="ms-azure">
+          <h2><span class="icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 18a5 5 0 0 1-.5-9.97A6 6 0 0 1 18 8.5a4.5 4.5 0 0 1-.5 9.5z"/></svg></span>Azure &amp; Windows</h2>
+          <ul class="links">
+            <li><a class="link" href="https://azure.microsoft.com"><span class="link-title">Microsoft Azure</span></a></li>
+            <li><a class="link" href="https://portal.azure.com"><span class="link-title">Azure portal</span></a></li>
+            <li><a class="link" href="https://admin.powerplatform.microsoft.com"><span class="link-title">Power Platform admin center</span></a></li>
+            <li><a class="link" href="https://www.catalog.update.microsoft.com"><span class="link-title">Microsoft Update Catalog</span></a></li>
+            <li><a class="link" href="https://learn.microsoft.com/en-us/windows/release-health/"><span class="link-title">Windows release health</span></a></li>
+            <li><a class="link" href="https://live.sysinternals.com"><span class="link-title">Sysinternals Live</span></a></li>
+          </ul>
+        </section>
+
+        <section class="card" id="ms-ps">
+          <h2><span class="icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="6 9 9 12 6 15"/><line x1="11" y1="15" x2="16" y2="15"/></svg></span>PowerShell modules</h2>
+          <h3 style="margin-top:0">Microsoft Graph</h3>
+          <div class="code"><div class="code-head"><span>powershell</span><button class="copy">Copy</button></div><pre><code>Install-Module Microsoft.Graph -Scope CurrentUser
+Connect-MgGraph -Scopes "User.Read.All","Group.Read.All"</code></pre></div>
+          <h3>Exchange Online</h3>
+          <div class="code"><div class="code-head"><span>powershell</span><button class="copy">Copy</button></div><pre><code>Install-Module ExchangeOnlineManagement -Scope CurrentUser
+Connect-ExchangeOnline -UserPrincipalName admin@yourdomain.com</code></pre></div>
+          <h3>Microsoft Teams</h3>
+          <div class="code"><div class="code-head"><span>powershell</span><button class="copy">Copy</button></div><pre><code>Install-Module MicrosoftTeams -Scope CurrentUser
+Connect-MicrosoftTeams</code></pre></div>
+          <h3>Azure (Az)</h3>
+          <div class="code"><div class="code-head"><span>powershell</span><button class="copy">Copy</button></div><pre><code>Install-Module Az -Scope CurrentUser
+Connect-AzAccount</code></pre></div>
+          <h3>RSAT on Windows 10/11</h3>
+          <div class="code"><div class="code-head"><span>powershell</span><button class="copy">Copy</button></div><pre><code>Get-WindowsCapability -Name RSAT* -Online | Add-WindowsCapability -Online</code></pre></div>
         </section>
       </div>
 
@@ -494,12 +569,11 @@ Endpoint = server.address.com:13231</code></pre></div>
           <div class="code"><div class="code-head"><span>bash</span><button class="copy">Copy</button></div><pre><code>iptables -D INPUT %NUM%</code></pre></div>
         </section>
 
-        <section class="card" id="autoinstall">
-          <h2><span class="icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><polyline points="7 10 12 15 17 10"/><line x1="4" y1="21" x2="20" y2="21"/></svg></span>Autoinstall scripts</h2>
-          <h3 style="margin-top:0">Install Docker on Ubuntu 22.04</h3>
-          <div class="code"><div class="code-head"><span>bash</span><button class="copy">Copy</button></div><pre><code>curl https://raw.githubusercontent.com/alblackt/tools/master/deploy/ubuntu_docker_install.sh | bash</code></pre></div>
-          <h3>Croc installation script</h3>
-          <div class="code"><div class="code-head"><span>bash</span><button class="copy">Copy</button></div><pre><code>curl https://getcroc.com | bash</code></pre></div>
+        <section class="card" id="devops">
+          <h2><span class="icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg></span>DevOps</h2>
+          <ul class="links">
+            <li><a class="link" href="https://dzone.com/articles/how-to-prepare-for-your-devops-interview"><span class="link-title">DevOps Knowledge Base</span></a></li>
+          </ul>
         </section>
 
       </div>
@@ -587,14 +661,102 @@ Endpoint = server.address.com:13231</code></pre></div>
     renderYear();
     setInterval(renderYear, 60 * 1000);
 
-    // Search filter
+    // Storage helpers (per browser; safe if storage is blocked)
+    const store = {
+      get(k, d) { try { const v = JSON.parse(localStorage.getItem(k)); return v ?? d; } catch (e) { return d; } },
+      set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+    };
+    const STAR = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.8 5.7 6.2.9-4.5 4.4 1 6.2L12 17.3 6.5 20.2l1-6.2L3 9.6l6.2-.9z"/></svg>';
+    const CHEV = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>';
+
+    // ---------- Favorites ----------
+    let favs = store.get('tools.favs', []);
+    const favCard = document.getElementById('favorites');
+    const favList = document.getElementById('favList');
+    const favGrid = document.getElementById('favGrid');
+    const favTitle = document.getElementById('favTitle');
+
+    function makeStar(href) {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'star';
+      b.dataset.href = href;
+      b.innerHTML = STAR;
+      b.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); toggleFav(href); });
+      return b;
+    }
+    function wrapRow(a) {
+      const row = document.createElement('div');
+      row.className = 'link-row';
+      a.replaceWith(row);
+      row.appendChild(a);
+      row.appendChild(makeStar(a.getAttribute('href')));
+    }
+    document.querySelectorAll('main a.link').forEach(wrapRow);
+
+    function toggleFav(href) {
+      favs = favs.includes(href) ? favs.filter(h => h !== href) : [...favs, href];
+      store.set('tools.favs', favs);
+      renderFavs();
+    }
+    function renderFavs() {
+      favList.innerHTML = '';
+      favs = favs.filter(href => {
+        const src = [...document.querySelectorAll('main a.link')].find(a => a.getAttribute('href') === href && !favCard.contains(a));
+        if (!src) return false;
+        const li = document.createElement('li');
+        const a = src.cloneNode(true);
+        li.appendChild(a);
+        favList.appendChild(li);
+        wrapRow(a);
+        return true;
+      });
+      document.querySelectorAll('button.star').forEach(b => {
+        const on = favs.includes(b.dataset.href);
+        b.classList.toggle('on', on);
+        b.title = on ? 'Remove from favorites' : 'Add to favorites';
+        b.setAttribute('aria-label', b.title);
+      });
+      const empty = favs.length === 0;
+      if (empty) favCard.dataset.empty = '1'; else delete favCard.dataset.empty;
+      applySearch();
+    }
+
+    // ---------- Collapsible cards ----------
+    let collapsed = store.get('tools.collapsed', []);
+    document.querySelectorAll('.card').forEach(card => {
+      const h2 = card.querySelector('h2');
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'chev';
+      btn.innerHTML = CHEV;
+      h2.appendChild(btn);
+      const sync = () => {
+        const c = card.classList.contains('collapsed');
+        btn.setAttribute('aria-expanded', String(!c));
+        btn.setAttribute('aria-label', (c ? 'Expand ' : 'Collapse ') + h2.textContent.trim());
+      };
+      if (collapsed.includes(card.id)) card.classList.add('collapsed');
+      sync();
+      h2.addEventListener('click', e => {
+        if (e.target.closest('a, button.star')) return;
+        card.classList.toggle('collapsed');
+        collapsed = [...document.querySelectorAll('.card.collapsed')].map(c => c.id);
+        store.set('tools.collapsed', collapsed);
+        sync();
+      });
+    });
+
+    // ---------- Search filter ----------
     const q = document.getElementById('q');
     const cards = [...document.querySelectorAll('.card')];
-    const empty = document.getElementById('empty');
-    q.addEventListener('input', () => {
+    const emptyMsg = document.getElementById('empty');
+    function applySearch() {
       const term = q.value.trim().toLowerCase();
+      document.body.classList.toggle('searching', !!term);
       let any = false;
       cards.forEach(card => {
+        if (card.dataset.empty) { card.classList.add('hidden'); return; }
         const items = card.querySelectorAll('.links > li, .code, .keys tr, .steps > li');
         const titleHit = card.querySelector('h2').textContent.toLowerCase().includes(term);
         let hit = !term || titleHit;
@@ -611,12 +773,14 @@ Endpoint = server.address.com:13231</code></pre></div>
         g.classList.toggle('hidden', !vis);
         g.previousElementSibling.classList.toggle('hidden', !vis);
       });
-      empty.classList.toggle('hidden', any);
-    });
+      emptyMsg.classList.toggle('hidden', any);
+    }
+    q.addEventListener('input', applySearch);
     document.addEventListener('keydown', e => {
       if (e.key === '/' && document.activeElement !== q) { e.preventDefault(); q.focus(); }
-      if (e.key === 'Escape' && document.activeElement === q) { q.value = ''; q.dispatchEvent(new Event('input')); q.blur(); }
+      if (e.key === 'Escape' && document.activeElement === q) { q.value = ''; applySearch(); q.blur(); }
     });
+    renderFavs();
 
     // Highlight active section in nav
     const navLinks = [...document.querySelectorAll('#nav a')];
